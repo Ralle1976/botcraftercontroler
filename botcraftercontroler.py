@@ -5,7 +5,7 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from google.oauth2.service_account import Credentials
 import requests
-from dotenv import load_dotenv
+
 
 app = Flask(__name__)
 app.debug = True
