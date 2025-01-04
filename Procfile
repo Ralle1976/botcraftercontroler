@@ -1,1 +1,1 @@
-web: gunicorn botcraftercontroler.py
+web: gunicorn botcraftercontroler:app
