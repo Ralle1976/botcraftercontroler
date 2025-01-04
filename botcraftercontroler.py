@@ -31,6 +31,12 @@ def log_request_details():
     logger.info("Body: %s", body)
     logger.info("Args: %s", args)
 
+# Root-Route für die App
+@app.route('/')
+def index():
+    return jsonify({"status": "error", "message": "Unauthorized"}), 401
+
+
 @app.before_request
 def before_request():
     log_request_details()  # Loggt alle Anfragen
@@ -110,6 +116,13 @@ def push_schema():
         return jsonify({"message": "Schema pushed to GitHub.", "details": push_response.json()})
     else:
         return jsonify({"error": "Failed to push schema to GitHub.", "details": push_response.json()}), 400
+
+@app.route('/routes', methods=['GET'])
+def list_routes():
+    routes = []
+    for rule in app.url_map.iter_rules():
+        routes.append({"route": rule.rule, "methods": list(rule.methods)})
+    return jsonify({"available_routes": routes})
 
 
 #if __name__ == '__main__':
