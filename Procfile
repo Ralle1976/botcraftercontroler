@@ -1,1 +1,1 @@
-web: phyton botcraftercontroler:app
+web: gunicorn botcraftercontroler:app
