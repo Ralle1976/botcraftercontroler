@@ -1,4 +1,5 @@
 import os
+import logging
 import requests
 import base64
 import json
@@ -8,6 +9,10 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from google.oauth2.service_account import Credentials
 
+# Logging konfigurieren
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 app = Flask(__name__)
 #app.debug = True
@@ -15,13 +20,23 @@ app = Flask(__name__)
 # API-Token für die Autorisierung
 API_TOKEN = os.getenv("API_TOKEN")
 
+
+# Globale Debugging-Funktion
+def log_request_details():
+    headers = dict(request.headers)
+    body = request.get_json(silent=True)
+    args = request.args.to_dict()
+
+    logger.info("Headers: %s", headers)
+    logger.info("Body: %s", body)
+    logger.info("Args: %s", args)
+
 @app.before_request
-def verify_api_token():
-    token = request.headers.get('Authorization')
-    if not token or token != f"Bearer {API_TOKEN}":
-        return jsonify({"error": "Unauthorized"}), 401
-
-
+def before_request():
+    log_request_details()  # Loggt alle Anfragen
+    token = request.headers.get("Authorization")
+    if token != API_TOKEN:
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
 
 # Google Drive Service Initialization
 def get_drive_service():
