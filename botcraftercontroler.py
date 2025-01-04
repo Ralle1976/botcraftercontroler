@@ -13,13 +13,11 @@ from google.oauth2.service_account import Credentials
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 app = Flask(__name__)
 #app.debug = True
 
 # API-Token für die Autorisierung
 API_TOKEN = os.getenv("API_TOKEN")
-
 
 # Globale Debugging-Funktion
 def log_request_details():
@@ -35,7 +33,6 @@ def log_request_details():
 @app.route('/')
 def index():
     return jsonify({"status": "error", "message": "Unauthorized"}), 401
-
 
 @app.before_request
 def before_request():
@@ -55,7 +52,6 @@ def get_drive_service():
     except Exception as e:
         raise RuntimeError(f"Failed to initialize Google Drive service: {e}")
 
-
 # Route: Upload Schema to Google Drive
 @app.route('/upload-schema', methods=['POST'])
 def upload_schema():
@@ -73,7 +69,6 @@ def upload_schema():
     file = service.files().create(body=file_metadata, media_body=MediaFileUpload(file_name, mimetype='application/json', resumable=False)).execute()
     return jsonify({"file_id": file.get('id'), "message": "Schema uploaded to Google Drive."})
 
-
 # Route: Download Schema from Google Drive
 @app.route('/download-schema', methods=['GET'])
 def download_schema():
@@ -83,8 +78,6 @@ def download_schema():
     request_drive = service.files().get_media(fileId=file_id)
     file_content = request_drive.execute()
     return jsonify({"schema": file_content.decode('utf-8')})
-
-
 
 @app.route('/push-schema', methods=['POST'])
 def push_schema():
@@ -123,7 +116,6 @@ def list_routes():
     for rule in app.url_map.iter_rules():
         routes.append({"route": rule.rule, "methods": list(rule.methods)})
     return jsonify({"available_routes": routes})
-
 
 #if __name__ == '__main__':
 #    app.run(debug=True)
