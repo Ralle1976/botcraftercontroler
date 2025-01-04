@@ -78,5 +78,6 @@ def push_schema():
     else:
         return jsonify({"error": "Failed to push schema to GitHub.", "details": push_response.json()}), 400
 
+
 #if __name__ == '__main__':
 #    app.run(debug=True)
