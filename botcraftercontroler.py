@@ -76,5 +76,5 @@ def list_routes():
         routes.append({"route": rule.rule, "methods": list(rule.methods)})
     return jsonify({"available_routes": routes})
 
-if __name__ == '__main__':
-    app.run(debug=True)
+#if __name__ == '__main__':
+ #   app.run(debug=True)
