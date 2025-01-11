@@ -1,42 +1,46 @@
 from flask import Blueprint, request, jsonify
-from .github_api import get_user_info, list_repos, create_repo, delete_repo
-from .gdrive_api import list_files, upload_file, delete_file
+from .github_api import push_to_github
+from .gdrive_api import get_drive_service, download_file_from_drive
 
 api = Blueprint('api', __name__)
 
-# GitHub API Routen
-@api.route('/github/user', methods=['GET'])
-def github_user():
-    return jsonify(get_user_info())
+# Route: Download Schema from Google Drive
+@api.route('/download-schema', methods=['GET'])
+def download_schema():
+    file_id = request.args.get('file_id')
+    service = get_drive_service()
 
-@api.route('/github/repos', methods=['GET'])
-def github_repos():
-    username = request.args.get('username')
-    return jsonify(list_repos(username))
+    try:
+        file_content = download_file_from_drive(service, file_id)
+        return jsonify({"schema": file_content})
+    except Exception as e:
+        return jsonify({"error": "Fehler beim Herunterladen des Schemas.", "details": str(e)}), 500
 
-@api.route('/github/repo', methods=['POST'])
-def github_create_repo():
-    data = request.json
-    return jsonify(create_repo(data['name'], data.get('private', True)))
+# Route: Push Schema to GitHub
+@api.route('/push-schema', methods=['POST'])
+def push_schema():
+    repo = request.json.get('repo')
+    token = request.json.get('token')
+    file_path = request.json.get('file_path', 'schema.json')
+    commit_message = request.json.get('message', 'Update schema')
+    file_content = request.json.get('content')
 
-@api.route('/github/repo', methods=['DELETE'])
-def github_delete_repo():
-    data = request.json
-    return jsonify(delete_repo(data['owner'], data['repo']))
+    if not repo or not token or not file_content:
+        return jsonify({"error": "Fehlende Eingaben: repo, token oder content"}), 400
 
-# Google Drive API Routen
-@api.route('/gdrive/files', methods=['GET'])
-def drive_files():
-    return jsonify(list_files())
+    try:
+        push_response = push_to_github(repo, token, file_path, commit_message, file_content)
+        if push_response.status_code in [200, 201]:
+            return jsonify({"message": "Schema erfolgreich zu GitHub gepusht.", "details": push_response.json()})
+        else:
+            return jsonify({"error": "Fehler beim Pushen des Schemas.", "details": push_response.json()}), 400
+    except Exception as e:
+        return jsonify({"error": "Fehler beim Pushen des Schemas.", "details": str(e)}), 500
 
-@api.route('/gdrive/upload', methods=['POST'])
-def drive_upload():
-    file = request.files['file']
-    file_id = upload_file(file.filename, f"/tmp/{file.filename}", file.content_type)
-    return jsonify({"file_id": file_id})
-
-@api.route('/gdrive/delete', methods=['DELETE'])
-def drive_delete():
-    file_id = request.json['file_id']
-    delete_file(file_id)
-    return jsonify({"status": "deleted"})
+# Route: Liste aller verfügbaren Routen
+@api.route('/routes', methods=['GET'])
+def list_routes():
+    routes = []
+    for rule in api.url_map.iter_rules():
+        routes.append({"route": rule.rule, "methods": list(rule.methods)})
+    return jsonify({"available_routes": routes})

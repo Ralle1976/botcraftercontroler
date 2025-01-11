@@ -1,28 +1,25 @@
 import os
 import requests
+import base64
 
 GITHUB_API_URL = "https://api.github.com"
-TOKEN = os.getenv('GITHUB_TOKEN')
 
-def make_github_request(endpoint, method="GET", payload=None, params=None):
+def push_to_github(repo, token, file_path, commit_message, file_content):
     headers = {
-        "Authorization": f"token {TOKEN}",
-        "Accept": "application/vnd.github.v3+json"
+        'Authorization': f'token {token}'
     }
-    url = f"{GITHUB_API_URL}{endpoint}"
-    response = requests.request(method, url, headers=headers, json=payload, params=params)
-    response.raise_for_status()
-    return response.json()
+    url = f"{GITHUB_API_URL}/repos/{repo}/contents/{file_path}"
 
-def get_user_info():
-    return make_github_request("/user")
+    # Prüfen, ob die Datei existiert, um SHA zu erhalten
+    response = requests.get(url, headers=headers)
+    sha = response.json().get('sha') if response.status_code == 200 else None
 
-def list_repos(username):
-    return make_github_request(f"/users/{username}/repos")
+    encoded_content = base64.b64encode(file_content.encode('utf-8')).decode('utf-8')
+    data = {
+        'message': commit_message,
+        'content': encoded_content,
+        'sha': sha
+    }
 
-def create_repo(repo_name, private=True):
-    payload = {"name": repo_name, "private": private}
-    return make_github_request("/user/repos", method="POST", payload=payload)
-
-def delete_repo(owner, repo):
-    return make_github_request(f"/repos/{owner}/{repo}", method="DELETE")
+    push_response = requests.put(url, headers=headers, json=data)
+    return push_response
