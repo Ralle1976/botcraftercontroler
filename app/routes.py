@@ -1,8 +1,14 @@
 from flask import Blueprint, request, jsonify
 from .github_api import push_to_github
 from .gdrive_api import get_drive_service, download_file_from_drive
+from werkzeug.utils import quote as url_quote
 
 api = Blueprint('api', __name__)
+
+@api.route('/', methods=['GET'])
+def home():
+    return jsonify({"message": "Willkommen bei BotCrafterController!"})
+
 
 # Route: Download Schema from Google Drive
 @api.route('/download-schema', methods=['GET'])
