@@ -13,6 +13,7 @@ paths:
   /list-files:
     get:
       summary: Listet Dateien im Google Drive auf.
+      description: Gibt eine Liste von Dateien im angegebenen Ordner zurück.
       parameters:
         - name: folder_id
           in: query
@@ -32,11 +33,14 @@ paths:
                   properties:
                     id:
                       type: string
+                      description: Die eindeutige ID der Datei.
                     name:
                       type: string
+                      description: Der Name der Datei.
   /upload-file:
     post:
       summary: Lädt eine Datei in Google Drive hoch.
+      description: Die Datei wird in das angegebene Verzeichnis hochgeladen.
       requestBody:
         required: true
         content:
@@ -46,16 +50,31 @@ paths:
               properties:
                 file_path:
                   type: string
+                  description: Der Pfad zur hochzuladenden Datei.
                 mime_type:
                   type: string
+                  description: Der MIME-Typ der Datei.
                 parent_folder_id:
                   type: string
+                  description: Die ID des übergeordneten Ordners.
       responses:
         "201":
           description: Datei erfolgreich hochgeladen.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Die ID der hochgeladenen Datei.
+                  name:
+                    type: string
+                    description: Der Name der hochgeladenen Datei.
   /delete-file:
     delete:
       summary: Löscht eine Datei aus Google Drive.
+      description: Entfernt die Datei anhand ihrer ID.
       requestBody:
         required: true
         content:
@@ -65,155 +84,49 @@ paths:
               properties:
                 file_id:
                   type: string
+                  description: Die ID der zu löschenden Datei.
       responses:
         "204":
           description: Datei erfolgreich gelöscht.
-  /create-folder:
-    post:
-      summary: Erstellt einen neuen Ordner in Google Drive.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                folder_name:
-                  type: string
-                parent_folder_id:
-                  type: string
-      responses:
-        "201":
-          description: Ordner erfolgreich erstellt.
-  /create-repo:
-    post:
-      summary: Erstellt ein neues GitHub-Repository.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                repo_name:
-                  type: string
-                private:
-                  type: boolean
-      responses:
-        "201":
-          description: Repository erfolgreich erstellt.
-  /list-repo-files:
-    get:
-      summary: Listet Dateien in einem GitHub-Repository auf.
-      parameters:
-        - name: owner
-          in: query
-          required: true
-          description: GitHub-Besitzer des Repositories.
-          schema:
-            type: string
-        - name: repo
-          in: query
-          required: true
-          description: Name des GitHub-Repositories.
-          schema:
-            type: string
-        - name: path
-          in: query
-          required: false
-          description: Pfad innerhalb des Repositories.
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Erfolgreiche Antwort mit Dateiliste.
-  /upload-repo-file:
-    post:
-      summary: Lädt eine Datei in ein GitHub-Repository hoch.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                repo:
-                  type: string
-                file_path:
-                  type: string
-                commit_message:
-                  type: string
-                content:
-                  type: string
-      responses:
-        "201":
-          description: Datei erfolgreich hochgeladen.
-  /delete-repo-file:
-    delete:
-      summary: Löscht eine Datei aus einem GitHub-Repository.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                repo:
-                  type: string
-                file_path:
-                  type: string
-      responses:
-        "204":
-          description: Datei erfolgreich gelöscht.
-  /create-branch:
-    post:
-      summary: Erstellt einen neuen Branch in einem GitHub-Repository.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                repo:
-                  type: string
-                branch_name:
-                  type: string
-                source_branch:
-                  type: string
-      responses:
-        "201":
-          description: Branch erfolgreich erstellt.
-  /create-pull-request:
-    post:
-      summary: Erstellt einen Pull Request für ein GitHub-Repository.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                repo:
-                  type: string
-                title:
-                  type: string
-                head:
-                  type: string
-                base:
-                  type: string
-      responses:
-        "201":
-          description: Pull Request erfolgreich erstellt.
   /list-repos:
     get:
       summary: Listet alle verfügbaren Repositories aus der Konfiguration auf.
+      description: Gibt die Namen und URLs der verfügbaren Repositories zurück.
       responses:
         "200":
           description: Erfolgreiche Antwort mit Liste von Repository-Namen.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: Der Name des Repositories.
+                    url:
+                      type: string
+                      description: Die URL des Repositories.
   /routes:
     get:
       summary: Listet alle verfügbaren Routen der API auf.
+      description: Gibt eine Liste aller API-Endpunkte mit ihren Methoden zurück.
       responses:
         "200":
           description: Erfolgreiche Antwort mit Liste von Routen.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    route:
+                      type: string
+                      description: Der Pfad der Route.
+                    methods:
+                      type: array
+                      items:
+                        type: string
+                      description: Die HTTP-Methoden, die von der Route unterstützt werden.
