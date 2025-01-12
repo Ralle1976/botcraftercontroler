@@ -5,7 +5,15 @@ from werkzeug.utils import quote as url_quote
 
 api = Blueprint('api', __name__)
 
-API_KEY = repo_config.get("API_TOKEN")
+# Laden der Konfiguration aus der Umgebungsvariable
+repo_config_json = os.getenv("GITHUB_REPO_CONFIG")
+if repo_config_json:
+    repo_config = json.loads(repo_config_json)
+else:
+    raise RuntimeError("GITHUB_REPO_CONFIG is not set or invalid")
+
+
+API_KEY = os.getenv("API_TOKEN")
 
 def check_auth(api_key):
     return api_key == request.args.get(API_KEY) 
