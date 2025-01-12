@@ -1,104 +1,123 @@
 
 # BotCrafterController
 
-BotCrafterController ist eine Flask-basierte Webanwendung, die die Google Drive API und die GitHub API vollständig integriert. Die Anwendung bietet Endpunkte zur Verwaltung von Dateien in Google Drive sowie zur Interaktion mit GitHub-Repositories.
+BotCrafterController ist eine Flask-basierte Anwendung, die eine umfassende Integration der Google Drive API und der GitHub API bietet. 
+Die App ermöglicht die Verwaltung von Dateien in Google Drive sowie die Interaktion mit GitHub-Repositories.
 
 ---
 
 ## **Features**
 
 ### Google Drive API
-- **Datei hochladen**: Lädt eine Datei in Google Drive hoch.
-- **Dateien auflisten**: Listet Dateien in einem Ordner oder im gesamten Google Drive auf.
-- **Datei herunterladen**: Lädt eine Datei basierend auf der `file_id` herunter.
-- **Datei löschen**: Löscht eine Datei basierend auf der `file_id`.
-- **Ordner erstellen**: Erstellt einen neuen Ordner.
+- Hochladen von Dateien in Google Drive.
+- Auflisten von Dateien und Ordnern.
+- Herunterladen von Dateien.
+- Löschen von Dateien.
+- Erstellen von Ordnern.
 
 ### GitHub API
-- **Repository erstellen**: Erstellt ein neues GitHub-Repository.
-- **Dateien auflisten**: Listet Dateien in einem Repository-Verzeichnis auf.
-- **Datei hochladen/aktualisieren**: Lädt eine Datei hoch oder aktualisiert sie.
-- **Datei löschen**: Löscht eine Datei aus einem Repository.
-- **Branch erstellen**: Erstellt einen neuen Branch.
-- **Pull Request erstellen**: Erstellt einen Pull Request.
+- Erstellung neuer Repositories.
+- Auflisten von Dateien in einem Repository.
+- Hochladen und Aktualisieren von Dateien in einem Repository.
+- Löschen von Dateien in einem Repository.
+- Erstellung neuer Branches.
+- Erstellung von Pull Requests.
+
+---
+
+## **Architekturübersicht**
+
+Die Anwendung ist modular aufgebaut:
+- `app/` - Hauptverzeichnis der Anwendung.
+  - `__init__.py` - Initialisierung der Flask-App.
+  - `routes.py` - Definition der API-Endpunkte.
+  - `github_api.py` - Funktionen für die GitHub API.
+  - `gdrive_api.py` - Funktionen für die Google Drive API.
+- `config.py` - Konfigurationsklasse für Umgebungsvariablen.
+- `run.py` - Startpunkt der Anwendung.
+- `requirements.txt` - Liste der Python-Abhängigkeiten.
+- `Procfile` - Heroku-Konfigurationsdatei.
 
 ---
 
 ## **Installation**
 
 ### Voraussetzungen
-1. **Python 3.10 oder höher**
-2. **Abhängigkeiten in `requirements.txt`**
+- **Python 3.10 oder höher**
+- **Abhängigkeiten** in `requirements.txt`.
 
-### Lokale Installation
-1. Repository klonen:
+### Schritte
+1. **Repository klonen**:
     ```bash
     git clone https://github.com/<your-username>/<your-repository>.git
     cd <your-repository>
     ```
 
-2. Virtuelle Umgebung erstellen und aktivieren:
+2. **Virtuelle Umgebung erstellen und aktivieren**:
     ```bash
     python -m venv venv
     source venv/bin/activate  # Für Unix/Mac
     venv\Scripts\activate  # Für Windows
     ```
 
-3. Abhängigkeiten installieren:
+3. **Abhängigkeiten installieren**:
     ```bash
     pip install -r requirements.txt
     ```
 
-4. Anwendung starten:
+4. **Anwendung starten**:
     ```bash
     python run.py
     ```
 
-Die Anwendung läuft unter `http://127.0.0.1:5000`.
+Die Anwendung ist jetzt unter `http://127.0.0.1:5000` verfügbar.
 
 ---
 
-## **Umgebungsvariablen**
+## **Konfiguration**
 
 Die Anwendung verwendet folgende Umgebungsvariablen:
 - `GOOGLE_CREDENTIALS`: JSON-Inhalt der Google Service Account Credentials.
-- `GITHUB_TOKEN`: Personal Access Token für die GitHub API.
-- `SECRET_KEY`: Flask-Anwendungsschlüssel.
+- `GITHUB_REPO_CONFIG`: JSON-Inhalt mit Repositories und zugehörigen Tokens.
+- `SECRET_KEY`: Flask-Secret-Key.
 
-### Beispiel: Google Credentials setzen
-Falls `credentials.json` lokal vorhanden ist:
-```bash
-export GOOGLE_CREDENTIALS="$(cat credentials.json)"
+### Beispielkonfiguration für `GITHUB_REPO_CONFIG`:
+```json
+{
+    "repo1": {
+        "url": "https://github.com/Ralle1976/botcrafter",
+        "token": "MeinToken1"
+    },
+    "repo2": {
+        "url": "https://github.com/Ralle1976/botcraftercontroler",
+        "token": "MeinToken2"
+    }
+}
 ```
 
----
-
-## **Bereitstellung auf Heroku**
-
-1. Anwendung zu Heroku pushen:
-    ```bash
-    git push heroku main
-    ```
-
-2. Umgebungsvariablen konfigurieren:
-    ```bash
-    heroku config:set GOOGLE_CREDENTIALS="$(cat credentials.json)"
-    heroku config:set GITHUB_TOKEN="<your_github_token>"
-    ```
-
-3. Logs überprüfen:
-    ```bash
-    heroku logs --tail
-    ```
+### Setzen der Umgebungsvariablen auf Heroku:
+```bash
+heroku config:set GOOGLE_CREDENTIALS="$(cat credentials.json)"
+heroku config:set GITHUB_REPO_CONFIG='{
+    "repo1": {
+        "url": "https://github.com/Ralle1976/botcrafter",
+        "token": "MeinToken1"
+    },
+    "repo2": {
+        "url": "https://github.com/Ralle1976/botcraftercontroler",
+        "token": "MeinToken2"
+    }
+}'
+```
 
 ---
 
 ## **API-Endpunkte**
 
-### **Google Drive API**
+### Google Drive API
 1. **Dateien auflisten**
     - **GET** `/list-files`
-    - Query-Parameter: `folder_id` (optional)
+    - Query-Parameter: `folder_id` (optional).
     - Beispiel:
         ```bash
         curl -X GET "http://127.0.0.1:5000/list-files?folder_id=<FOLDER_ID>"
@@ -124,7 +143,7 @@ export GOOGLE_CREDENTIALS="$(cat credentials.json)"
         }
         ```
 
-### **GitHub API**
+### GitHub API
 1. **Repository erstellen**
     - **POST** `/create-repo`
     - Body (JSON):
@@ -155,27 +174,32 @@ export GOOGLE_CREDENTIALS="$(cat credentials.json)"
 
 ---
 
-## **Beispiel für Umgebungsvariablen**
-Erstelle eine `.env`-Datei (optional für lokale Entwicklung):
-```
-GOOGLE_CREDENTIALS={"type": "service_account", ...}
-GITHUB_TOKEN=your_github_token
-SECRET_KEY=your_secret_key
+## **Tests**
+
+### Lokale Tests ausführen:
+```bash
+pytest
 ```
 
 ---
 
-## **Tests**
+## **OpenAPI Schema**
 
-### Lokale Tests
-- Stelle sicher, dass `GOOGLE_CREDENTIALS` und `GITHUB_TOKEN` gesetzt sind.
-- Starte die Tests:
-    ```bash
-    pytest
-    ```
+Siehe die Datei `openapi.yaml` für das vollständige OpenAPI-Schema der Anwendung.
+
+---
+
+## **Bekannte Probleme**
+- **API-Schlüssel sichern:** Stelle sicher, dass Tokens niemals in der API-Rückgabe oder in Logs erscheinen.
+- **Fehler bei Google Drive API:** Vergewissere dich, dass die JSON-Credentials korrekt gesetzt sind.
+
+---
+
+## **Support**
+Bei Fragen oder Problemen erreichst du uns unter `<deine-email@domain.com>`.
 
 ---
 
 ## **Lizenz**
-
 Dieses Projekt steht unter der [MIT-Lizenz](LICENSE).
+
