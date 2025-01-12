@@ -155,7 +155,7 @@ heroku config:set GITHUB_REPO_CONFIG='{
         ```
 
 2. **Dateien auflisten**
-    - **GET** `/list-files`
+    - **GET** `/list-repo-files`
     - Query-Parameter:
         - `owner`: Repository-Besitzer.
         - `repo`: Repository-Name.
@@ -174,18 +174,18 @@ heroku config:set GITHUB_REPO_CONFIG='{
 
 ---
 
+## **OpenAPI Schema**
+
+Ein vollständiges Schema für die API befindet sich in der Datei [openapi_complete.yaml](openapi_complete.yaml). Es deckt alle Endpunkte und ihre Details ab.
+
+---
+
 ## **Tests**
 
 ### Lokale Tests ausführen:
 ```bash
 pytest
 ```
-
----
-
-## **OpenAPI Schema**
-
-Siehe die Datei `openapi.yaml` für das vollständige OpenAPI-Schema der Anwendung.
 
 ---
 
@@ -196,10 +196,9 @@ Siehe die Datei `openapi.yaml` für das vollständige OpenAPI-Schema der Anwendu
 ---
 
 ## **Support**
-Bei Fragen oder Problemen erreichst du uns unter `ralf.arnold@it-bfw.de`.
+Bei Fragen oder Problemen erreichst du uns unter `Ralf.Arnold@it-bfw.de`.
 
 ---
 
 ## **Lizenz**
 Dieses Projekt steht unter der [MIT-Lizenz](LICENSE).
-
