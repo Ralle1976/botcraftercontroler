@@ -10,7 +10,7 @@ api = Blueprint('api', __name__)
 API_KEY = "API_TOKEN"
 
 def check_auth(api_key):
-    return api_key == API_KEY
+    return api_key == request.args.get("API_KEY") 
 
 @api.before_request
 def authenticate():
