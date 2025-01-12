@@ -5,6 +5,20 @@ from werkzeug.utils import quote as url_quote
 
 api = Blueprint('api', __name__)
 
+
+
+API_KEY = "API_TOKEN"
+
+def check_auth(api_key):
+    return api_key == API_KEY
+
+@api.before_request
+def authenticate():
+    api_key = request.headers.get("X-API-KEY")
+    if not check_auth(api_key):
+        return jsonify({"error": "Nicht autorisiert"}), 401
+
+
 @api.route('/', methods=['GET'])
 def home():
     return jsonify({"message": "Willkommen bei BotCrafterController!"})
