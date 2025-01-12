@@ -5,12 +5,10 @@ from werkzeug.utils import quote as url_quote
 
 api = Blueprint('api', __name__)
 
-
-
-API_KEY = "API_TOKEN"
+API_KEY = repo_config.get("API_TOKEN")
 
 def check_auth(api_key):
-    return api_key == request.args.get("API_KEY") 
+    return api_key == request.args.get(API_KEY) 
 
 @api.before_request
 def authenticate():
