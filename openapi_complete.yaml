@@ -5,7 +5,7 @@ info:
   version: 1.0.0
   description: Vollständiges OpenAPI-Schema der BotCrafterController-Anwendung.
 servers:
-  - url: https://botcraftercontroler-5317cefda72b.herokuapp.com/api
+- url: https://botcraftercontroler-5317cefda72b.herokuapp.com/api
     description: Produktionsserver
   - url: http://localhost:5000
     description: Lokaler Entwicklungsserver
@@ -21,7 +21,7 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        "200":
           description: Erfolgreiche Antwort mit Dateiliste.
           content:
             application/json:
@@ -51,7 +51,7 @@ paths:
                 parent_folder_id:
                   type: string
       responses:
-        201:
+        "201":
           description: Datei erfolgreich hochgeladen.
   /delete-file:
     delete:
@@ -66,7 +66,7 @@ paths:
                 file_id:
                   type: string
       responses:
-        204:
+        "204":
           description: Datei erfolgreich gelöscht.
   /create-folder:
     post:
@@ -83,7 +83,7 @@ paths:
                 parent_folder_id:
                   type: string
       responses:
-        201:
+        "201":
           description: Ordner erfolgreich erstellt.
   /create-repo:
     post:
@@ -100,7 +100,7 @@ paths:
                 private:
                   type: boolean
       responses:
-        201:
+        "201":
           description: Repository erfolgreich erstellt.
   /list-repo-files:
     get:
@@ -125,7 +125,7 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        "200":
           description: Erfolgreiche Antwort mit Dateiliste.
   /upload-repo-file:
     post:
@@ -146,7 +146,7 @@ paths:
                 content:
                   type: string
       responses:
-        201:
+        "201":
           description: Datei erfolgreich hochgeladen.
   /delete-repo-file:
     delete:
@@ -163,7 +163,7 @@ paths:
                 file_path:
                   type: string
       responses:
-        204:
+        "204":
           description: Datei erfolgreich gelöscht.
   /create-branch:
     post:
@@ -182,7 +182,7 @@ paths:
                 source_branch:
                   type: string
       responses:
-        201:
+        "201":
           description: Branch erfolgreich erstellt.
   /create-pull-request:
     post:
@@ -203,17 +203,17 @@ paths:
                 base:
                   type: string
       responses:
-        201:
+        "201":
           description: Pull Request erfolgreich erstellt.
   /list-repos:
     get:
       summary: Listet alle verfügbaren Repositories aus der Konfiguration auf.
       responses:
-        200:
+        "200":
           description: Erfolgreiche Antwort mit Liste von Repository-Namen.
   /routes:
     get:
       summary: Listet alle verfügbaren Routen der API auf.
       responses:
-        200:
+        "200":
           description: Erfolgreiche Antwort mit Liste von Routen.
