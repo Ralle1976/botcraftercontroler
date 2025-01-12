@@ -50,3 +50,50 @@ def list_routes():
     for rule in api.url_map.iter_rules():
         routes.append({"route": rule.rule, "methods": list(rule.methods)})
     return jsonify({"available_routes": routes})
+
+@api.route("/list-repos", methods=["GET"])
+def list_repos():
+    """
+    Gibt die verfügbaren Repositories zurück, ohne die Tokens offenzulegen.
+    """
+    repos = Config.list_repos()
+    # Rückgabe der Repos ohne sensible Daten
+    repo_details = [
+        {"name": repo_name, "url": Config.get_repo_config(repo_name)["url"]}
+        for repo_name in repos
+    ]
+    return jsonify({"repositories": repo_details})
+
+
+@api.route("/repo-contents", methods=["GET"])
+def repo_contents():
+    """
+    Gibt die Inhalte eines Repositories zurück, basierend auf dem Namen und einem optionalen Pfad.
+    Query-Parameter:
+      - repo_name: Name des Repositories in der Konfiguration.
+      - path (optional): Der spezifische Pfad im Repository.
+    """
+    repo_name = request.args.get("repo_name")
+    path = request.args.get("path", "")
+
+    if not repo_name:
+        return jsonify({"error": "Parameter 'repo_name' ist erforderlich"}), 400
+
+    repo_config = Config.get_repo_config(repo_name)
+    if not repo_config:
+        return jsonify({"error": f"Repository '{repo_name}' nicht gefunden"}), 404
+
+    try:
+        # Abrufen der Repository-Inhalte
+        token = repo_config.get("token")
+        url = repo_config.get("url")
+        headers = {"Authorization": f"token {token}"}
+        api_url = f"https://api.github.com/repos/{'/'.join(url.split('/')[-2:])}/contents/{path}"
+        response = requests.get(api_url, headers=headers)
+
+        if response.status_code == 200:
+            return jsonify(response.json())
+        else:
+            return jsonify({"error": response.json(), "status_code": response.status_code}), 400
+    except Exception as e:
+        return jsonify({"error": f"Fehler beim Abrufen der Inhalte: {str(e)}"}), 500
