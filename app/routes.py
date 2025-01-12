@@ -78,14 +78,10 @@ def list_repos():
     ]
     return jsonify({"repositories": repo_details})
 
-
 @api.route("/repo-contents", methods=["GET"])
 def repo_contents():
     """
     Gibt die Inhalte eines Repositories zurück, basierend auf dem Namen und einem optionalen Pfad.
-    Query-Parameter:
-      - repo_name: Name des Repositories in der Konfiguration.
-      - path (optional): Der spezifische Pfad im Repository.
     """
     repo_name = request.args.get("repo_name")
     path = request.args.get("path", "")
@@ -98,16 +94,19 @@ def repo_contents():
         return jsonify({"error": f"Repository '{repo_name}' nicht gefunden"}), 404
 
     try:
-        # Abrufen der Repository-Inhalte
         token = repo_config.get("token")
         url = repo_config.get("url")
         headers = {"Authorization": f"token {token}"}
+
+        # API-URL für den Inhalt
         api_url = f"https://api.github.com/repos/{'/'.join(url.split('/')[-2:])}/contents/{path}"
         response = requests.get(api_url, headers=headers)
 
         if response.status_code == 200:
             return jsonify(response.json())
         else:
-            return jsonify({"error": response.json(), "status_code": response.status_code}), 400
+            # Keine Originalfehlermeldung weitergeben
+            return jsonify({"error": "Fehler beim Abrufen der Inhalte", "status_code": response.status_code}), 400
     except Exception as e:
-        return jsonify({"error": f"Fehler beim Abrufen der Inhalte: {str(e)}"}), 500
+        # Generische Fehlermeldung ohne sensible Details
+        return jsonify({"error": "Interner Fehler", "details": "Bitte Logs überprüfen"}), 500
