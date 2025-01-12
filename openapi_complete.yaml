@@ -5,13 +5,14 @@ info:
   version: 1.0.0
   description: Vollständiges OpenAPI-Schema der BotCrafterController-Anwendung.
 servers:
-- url: https://botcraftercontroler-5317cefda72b.herokuapp.com/api
+  - url: https://botcraftercontroler-5317cefda72b.herokuapp.com/api
     description: Produktionsserver
   - url: http://localhost:5000
     description: Lokaler Entwicklungsserver
 paths:
   /list-files:
     get:
+      operationId: listFiles
       summary: Listet Dateien im Google Drive auf.
       description: Gibt eine Liste von Dateien im angegebenen Ordner zurück.
       parameters:
@@ -39,6 +40,7 @@ paths:
                       description: Der Name der Datei.
   /upload-file:
     post:
+      operationId: uploadFile
       summary: Lädt eine Datei in Google Drive hoch.
       description: Die Datei wird in das angegebene Verzeichnis hochgeladen.
       requestBody:
@@ -73,6 +75,7 @@ paths:
                     description: Der Name der hochgeladenen Datei.
   /delete-file:
     delete:
+      operationId: deleteFile
       summary: Löscht eine Datei aus Google Drive.
       description: Entfernt die Datei anhand ihrer ID.
       requestBody:
@@ -90,6 +93,7 @@ paths:
           description: Datei erfolgreich gelöscht.
   /list-repos:
     get:
+      operationId: listRepositories
       summary: Listet alle verfügbaren Repositories aus der Konfiguration auf.
       description: Gibt die Namen und URLs der verfügbaren Repositories zurück.
       responses:
@@ -110,6 +114,7 @@ paths:
                       description: Die URL des Repositories.
   /routes:
     get:
+      operationId: listRoutes
       summary: Listet alle verfügbaren Routen der API auf.
       description: Gibt eine Liste aller API-Endpunkte mit ihren Methoden zurück.
       responses:
