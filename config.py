@@ -20,3 +20,5 @@ class Config:
         Gibt eine Liste aller verfügbaren Repository-Namen zurück.
         """
         return list(Config.GITHUB_REPO_CONFIG.keys())
+import os
+import json
