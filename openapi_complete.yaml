@@ -28,16 +28,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                      description: Die eindeutige ID der Datei.
-                    name:
-                      type: string
-                      description: Der Name der Datei.
+                $ref: '#/components/schemas/FileListResponse'
   /upload-file:
     post:
       operationId: uploadFile
@@ -48,31 +39,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                file_path:
-                  type: string
-                  description: Der Pfad zur hochzuladenden Datei.
-                mime_type:
-                  type: string
-                  description: Der MIME-Typ der Datei.
-                parent_folder_id:
-                  type: string
-                  description: Die ID des übergeordneten Ordners.
+              $ref: '#/components/schemas/UploadFileRequest'
       responses:
         "201":
           description: Datei erfolgreich hochgeladen.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    description: Die ID der hochgeladenen Datei.
-                  name:
-                    type: string
-                    description: Der Name der hochgeladenen Datei.
+                $ref: '#/components/schemas/UploadFileResponse'
   /delete-file:
     delete:
       operationId: deleteFile
@@ -83,11 +57,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                file_id:
-                  type: string
-                  description: Die ID der zu löschenden Datei.
+              $ref: '#/components/schemas/DeleteFileRequest'
       responses:
         "204":
           description: Datei erfolgreich gelöscht.
@@ -102,16 +72,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                      description: Der Name des Repositories.
-                    url:
-                      type: string
-                      description: Die URL des Repositories.
+                $ref: '#/components/schemas/RepositoryListResponse'
   /routes:
     get:
       operationId: listRoutes
@@ -123,15 +84,75 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    route:
-                      type: string
-                      description: Der Pfad der Route.
-                    methods:
-                      type: array
-                      items:
-                        type: string
-                      description: Die HTTP-Methoden, die von der Route unterstützt werden.
+                $ref: '#/components/schemas/RoutesListResponse'
+components:
+  schemas:
+    FileListResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            description: Die eindeutige ID der Datei.
+          name:
+            type: string
+            description: Der Name der Datei.
+    UploadFileRequest:
+      type: object
+      properties:
+        file_path:
+          type: string
+          description: Der Pfad zur hochzuladenden Datei.
+        mime_type:
+          type: string
+          description: Der MIME-Typ der Datei.
+        parent_folder_id:
+          type: string
+          description: Die ID des übergeordneten Ordners.
+    UploadFileResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Die ID der hochgeladenen Datei.
+        name:
+          type: string
+          description: Der Name der hochgeladenen Datei.
+    DeleteFileRequest:
+      type: object
+      properties:
+        file_id:
+          type: string
+          description: Die ID der zu löschenden Datei.
+    RepositoryListResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+            description: Der Name des Repositories.
+          url:
+            type: string
+            description: Die URL des Repositories.
+    RoutesListResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          route:
+            type: string
+            description: Der Pfad der Route.
+          methods:
+            type: array
+            items:
+              type: string
+            description: Die HTTP-Methoden, die von der Route unterstützt werden.
+security:
+  - api_key: []
+securitySchemes:
+  api_key:
+    type: apiKey
+    in: header
+    name: Authorization
