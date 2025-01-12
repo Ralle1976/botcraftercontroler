@@ -196,7 +196,7 @@ Siehe die Datei `openapi.yaml` für das vollständige OpenAPI-Schema der Anwendu
 ---
 
 ## **Support**
-Bei Fragen oder Problemen erreichst du uns unter `<deine-email@domain.com>`.
+Bei Fragen oder Problemen erreichst du uns unter `ralf.arnold@it-bfw.de`.
 
 ---
 
