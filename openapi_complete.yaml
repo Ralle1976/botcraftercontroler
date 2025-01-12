@@ -3,7 +3,12 @@ openapi: 3.1.0
 info:
   title: BotCrafterController API
   version: 1.0.0
-  description: API-Dokumentation für BotCrafterController.
+  description: Vollständiges OpenAPI-Schema der BotCrafterController-Anwendung.
+servers:
+  - url: https://botcraftercontroler-5317cefda72b.herokuapp.com/api
+    description: Produktionsserver
+  - url: http://localhost:5000
+    description: Lokaler Entwicklungsserver
 paths:
   /list-files:
     get:
